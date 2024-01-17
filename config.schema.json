@@ -1,15 +1,31 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "LevitonHomeAway",
   "pluginType": "platform",
   "singular": true,
   "schema": {
     "type": "object",
     "properties": {
-      "name": {
-        "title": "Name",
+      "email": {
+        "title": "Email",
         "type": "string",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "x-schema-form": {
+          "type": "username"
+        }
+      },
+      "password": {
+        "title": "Password",
+        "type": "string",
+        "required": true,
+        "x-schema-form": {
+          "type": "password"
+        }
+      },
+      "homeName": {
+        "title": "Name of home in My Leviton",
+        "type": "string",
+        "required": true,
+        "description": "This is the name of your home in the My Leviton app. It is case sensitive."
       }
     }
   }
