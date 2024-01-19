@@ -1,7 +1,7 @@
 {
   "displayName": "Homebridge Leviton Home/Away",
   "name": "homebridge-leviton-home-away",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A Homebridge plugin to control My Leviton Home/Away mode in HomeKit.",
   "license": "Apache-2.0",
   "repository": {
