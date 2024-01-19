@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fix race condition between external update to home/away status and internal state update. Now,
+  explicitly update internal state whenever there is an external home/away status update.
+
 ## [1.0.2] - 2024-01-19
 
 - Add more debug messages for socket connection.

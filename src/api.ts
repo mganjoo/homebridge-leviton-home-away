@@ -170,8 +170,11 @@ export class LevitonResidence {
           // We get two updates per change; one with a top level status field
           if (data.notification.data.status) {
             const status: 'HOME' | 'AWAY' = data.notification.data.status;
-            this.log.debug(`Socket: Received change notification: ${status}`);
-            callback(status);
+            if (status !== this.homeAwayStatus_) {
+              this.log.debug(`Socket: Received change notification: ${status}`);
+              this.homeAwayStatus_ = status;
+              callback(status);
+            }
           }
         } else {
           this.log.debug(
