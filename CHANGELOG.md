@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fix description of plugin.
+
 ## [1.0.0] - 2024-01-18
 
 - Initial release, providing an on/off switch corresponding to Home/Away states.
