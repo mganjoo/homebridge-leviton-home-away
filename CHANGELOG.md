@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add more debug messages for socket connection.
+
 ## [1.0.1] - 2024-01-18
 
 - Fix description of plugin.

@@ -110,7 +110,7 @@ export class LevitonResidence {
       return;
     }
     this.homeAwayStatus_ = status;
-    axios.put(
+    return axios.put(
       `${baseURL}/Residences/${this.residenceID}`,
       {
         status,
@@ -146,11 +146,14 @@ export class LevitonResidence {
       try {
         const data = JSON.parse(message.data);
 
-        if (data.type === 'challenge') {
+        if (data.type === 'status' && data.status === 'not ready') {
+          this.log.debug('Socket: Not authenticated yet');
+        } else if (data.type === 'challenge') {
+          this.log.debug('Socket: Received authentication challenge');
           const response = JSON.stringify({ token: this.loginData });
           ws.send(response);
-        }
-        if (data.type === 'status' && data.status === 'ready') {
+        } else if (data.type === 'status' && data.status === 'ready') {
+          this.log.debug('Socket: Auth successful, subscribing to updates');
           ws.send(
             JSON.stringify({
               type: 'subscribe',
@@ -160,16 +163,23 @@ export class LevitonResidence {
               },
             }),
           );
-        }
-        if (data.type === 'notification' && data.notification.data.Residence) {
-          const status: 'HOME' | 'AWAY' = data.notification.data.Residence.find(
-            (res) => res.id === this.residenceID,
-          ).status;
-          this.log.debug(`Received home/away change notification: ${status}`);
-          callback(status);
+        } else if (
+          data.type === 'notification' &&
+          data.notification.modelName === 'Residence'
+        ) {
+          // We get two updates per change; one with a top level status field
+          if (data.notification.data.status) {
+            const status: 'HOME' | 'AWAY' = data.notification.data.status;
+            this.log.debug(`Socket: Received change notification: ${status}`);
+            callback(status);
+          }
+        } else {
+          this.log.debug(
+            `Socket: Received unknown msg: ${String(message.data)}`,
+          );
         }
       } catch (err) {
-        this.log.error(`Received bad json: ${String(message.data)}`);
+        this.log.error(`Socket: Received bad json: ${String(message.data)}`);
       }
     });
 

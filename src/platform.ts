@@ -25,7 +25,7 @@ export class LevitonHomeAwayPlatform implements DynamicPlatformPlugin {
     public readonly config: PlatformConfig,
     public readonly api: API,
   ) {
-    this.log.debug('Finished initializing platform:', this.config.name);
+    this.log.debug('Finished initializing platform');
 
     this.api.on('didFinishLaunching', () => {
       log.debug('Executed didFinishLaunching callback');
