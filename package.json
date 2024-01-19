@@ -56,7 +56,7 @@
     },
     "github": {
       "release": true,
-      "releaseName": "v{$version}"
+      "releaseName": "v${version}"
     },
     "hooks": {
       "before:init": "npm run lint",
