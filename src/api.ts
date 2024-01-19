@@ -17,7 +17,7 @@ export class LevitonResidence {
   private readonly token: string;
   private readonly loginData: object;
   private readonly log: Logger;
-  private homeAwayStatus_: HomeAwayStatus;
+  private homeOccupied_: boolean;
 
   readonly residenceID: number;
 
@@ -29,7 +29,7 @@ export class LevitonResidence {
   ) {
     this.token = token;
     this.residenceID = residenceInfo.id;
-    this.homeAwayStatus_ = residenceInfo.status;
+    this.homeOccupied_ = residenceInfo.status === 'HOME';
     this.loginData = loginData;
     this.log = log;
   }
@@ -101,16 +101,18 @@ export class LevitonResidence {
     );
   }
 
-  get homeAwayStatus(): HomeAwayStatus {
-    return this.homeAwayStatus_;
+  get homeOccupied() {
+    return this.homeOccupied_;
   }
 
-  async updateHomeAwayStatus(status: 'HOME' | 'AWAY') {
-    if (status === this.homeAwayStatus_) {
+  async updateHomeOccupied(occupied: boolean) {
+    this.log.info('Set Home Occupied ->', occupied);
+    if (occupied === this.homeOccupied_) {
       return;
     }
-    this.homeAwayStatus_ = status;
-    return axios.put(
+    this.homeOccupied_ = occupied;
+    const status = occupied ? 'HOME' : 'AWAY';
+    await axios.put(
       `${baseURL}/Residences/${this.residenceID}`,
       {
         status,
@@ -123,7 +125,7 @@ export class LevitonResidence {
     );
   }
 
-  subscribeToHomeAwayStatus(callback: (status: 'HOME' | 'AWAY') => void) {
+  subscribeToHomeOccupied(callback: (homeOccupied: boolean) => void) {
     const ws = new ReconnectingWebSocket(
       'wss://my.leviton.com/socket/websocket',
       [],
@@ -147,13 +149,13 @@ export class LevitonResidence {
         const data = JSON.parse(message.data);
 
         if (data.type === 'status' && data.status === 'not ready') {
-          this.log.debug('Socket: Not authenticated yet');
+          this.log.info('Socket: Not authenticated yet');
         } else if (data.type === 'challenge') {
-          this.log.debug('Socket: Received authentication challenge');
+          this.log.info('Socket: Received authentication challenge');
           const response = JSON.stringify({ token: this.loginData });
           ws.send(response);
         } else if (data.type === 'status' && data.status === 'ready') {
-          this.log.debug('Socket: Auth successful, subscribing to updates');
+          this.log.info('Socket: Auth successful, subscribing to updates');
           ws.send(
             JSON.stringify({
               type: 'subscribe',
@@ -169,12 +171,12 @@ export class LevitonResidence {
         ) {
           // We get two updates per change; one with a top level status field
           if (data.notification.data.status) {
-            const status: 'HOME' | 'AWAY' = data.notification.data.status;
-            if (status !== this.homeAwayStatus_) {
-              this.log.debug(`Socket: Received change notification: ${status}`);
-              this.homeAwayStatus_ = status;
-              callback(status);
-            }
+            const newOccupied = data.notification.data.status === 'HOME';
+            this.log.info(
+              `Socket: Received change notification: occupied = ${newOccupied}`,
+            );
+            this.homeOccupied_ = newOccupied;
+            callback(newOccupied);
           }
         } else {
           this.log.debug(

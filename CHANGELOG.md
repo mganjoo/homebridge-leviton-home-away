@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- More streamlining of debug messages.
+
 ## [1.1.0] - 2024-01-19
 
 - Fix race condition between external update to home/away status and internal state update. Now,

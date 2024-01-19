@@ -34,22 +34,18 @@ export class HomeOccupiedSwitchAccessory {
       .onSet(this.setOn.bind(this))
       .onGet(this.getOn.bind(this));
 
-    residence.subscribeToHomeAwayStatus((status) => {
-      this.platform.log.debug('Status update ->', status);
+    residence.subscribeToHomeOccupied((occupied) => {
       this.service
         .getCharacteristic(this.platform.Characteristic.On)
-        .updateValue(status === 'HOME' ? true : false);
+        .updateValue(occupied);
     });
   }
 
   async setOn(value: CharacteristicValue) {
-    await this.residence.updateHomeAwayStatus(value ? 'HOME' : 'AWAY');
-    this.platform.log.debug('Set Home Occupied ->', value);
+    await this.residence.updateHomeOccupied(!!value);
   }
 
   async getOn(): Promise<CharacteristicValue> {
-    const isOccupied = this.residence.homeAwayStatus === 'HOME';
-    this.platform.log.debug('Get Home Occupied ->', isOccupied);
-    return isOccupied;
+    return this.residence.homeOccupied;
   }
 }
