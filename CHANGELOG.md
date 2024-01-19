@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2024-01-18
+
 - Fix description of plugin.
 
 ## [1.0.0] - 2024-01-18
 
 - Initial release, providing an on/off switch corresponding to Home/Away states.
 
-[unreleased]: https://github.com/mganjoo/homebridge-leviton-home-away/compare/1.0.0...HEAD
+[unreleased]: https://github.com/mganjoo/homebridge-leviton-home-away/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/mganjoo/homebridge-leviton-home-away/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/mganjoo/homebridge-leviton-home-away/releases/tag/1.0.0
