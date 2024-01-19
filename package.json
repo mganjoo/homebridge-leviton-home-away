@@ -1,7 +1,7 @@
 {
   "displayName": "Homebridge Leviton Home/Away",
   "name": "homebridge-leviton-home-away",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A short description about what your plugin does.",
   "license": "Apache-2.0",
   "repository": {
@@ -20,7 +20,7 @@
     "lint": "eslint src/**.ts --max-warnings=0",
     "watch": "npm run build && npm link && nodemon",
     "build": "rimraf ./dist && tsc",
-    "prepublishOnly": "npm run lint && npm run build"
+    "release": "release-it"
   },
   "keywords": [
     "homebridge-plugin"
@@ -32,6 +32,7 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@release-it/keep-a-changelog": "^5.0.0",
     "@types/node": "^18.16.20",
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
@@ -40,6 +41,7 @@
     "homebridge": "^1.6.0",
     "nodemon": "^2.0.22",
     "prettier": "^3.2.4",
+    "release-it": "^17.0.1",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
@@ -47,5 +49,26 @@
   "prettier": {
     "trailingComma": "all",
     "singleQuote": true
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release v{$version}"
+    },
+    "github": {
+      "release": true,
+      "releaseName": "v{$version}"
+    },
+    "hooks": {
+      "before:init": "npm run lint",
+      "after:bump": "npm run build"
+    },
+    "plugins": {
+      "@release-it/keep-a-changelog": {
+        "filename": "CHANGELOG.md",
+        "addUnreleased": true,
+        "addVersionUrl": true,
+        "strictLatest": false
+      }
+    }
   }
 }
